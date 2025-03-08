@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 
-const URL = "https://langualink-1-1.onrender.com:3000";
+const URL = "https://langualink-1-1.onrender.com";
 
 export const Room = ({
     name,
