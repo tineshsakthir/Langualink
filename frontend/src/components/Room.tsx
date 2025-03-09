@@ -1,8 +1,316 @@
-import { useEffect, useRef, useState } from "react";
+// // import { useEffect, useRef, useState } from "react";
+// // import { useSearchParams } from "react-router-dom";
+// // import { Socket, io } from "socket.io-client";
+// // import { Video, VideoOff, Mic, MicOff, Phone } from "lucide-react"; // Import icons
+
+// // const URL = "https://langualink-1-1.onrender.com";
+
+// // export const Room = ({
+// //     name,
+// //     language,
+// //     localAudioTrack,
+// //     localVideoTrack
+// // }: {
+// //     name: string,
+// //     language: string,
+// //     localAudioTrack: MediaStreamTrack | null,
+// //     localVideoTrack: MediaStreamTrack | null,
+// // }) => {
+// //     const [searchParams, setSearchParams] = useSearchParams();
+// //     const [lobby, setLobby] = useState(true);
+// //     const [socket, setSocket] = useState<null | Socket>(null);
+// //     const [sendingPc, setSendingPc] = useState<null | RTCPeerConnection>(null);
+// //     const [receivingPc, setReceivingPc] = useState<null | RTCPeerConnection>(null);
+// //     const [remoteVideoTrack, setRemoteVideoTrack] = useState<MediaStreamTrack | null>(null);
+// //     const [remoteAudioTrack, setRemoteAudioTrack] = useState<MediaStreamTrack | null>(null);
+// //     const [remoteMediaStream, setRemoteMediaStream] = useState<MediaStream | null>(null);
+// //     const [isCameraOn, setIsCameraOn] = useState(true);
+// //     const [isMicOn, setIsMicOn] = useState(true);
+
+    
+// //     // States for mute and camera toggle
+// //     const [isMuted, setIsMuted] = useState(false);
+// //     const [isCameraOff, setIsCameraOff] = useState(false);
+
+// //     const remoteVideoRef = useRef<HTMLVideoElement>(null);
+// //     const localVideoRef = useRef<HTMLVideoElement>(null);
+
+// //     useEffect(() => {
+// //         if (localVideoRef.current && localVideoTrack) {
+// //             localVideoRef.current.srcObject = new MediaStream([localVideoTrack]);
+// //             localVideoRef.current.play();
+// //         }
+// //     }, [localVideoTrack]);
+
+// //     // Toggle Mute
+// //     const toggleMic = () => {
+// //         if (localAudioTrack) {
+// //             localAudioTrack.enabled = !localAudioTrack.enabled;
+// //             setIsMicOn(localAudioTrack.enabled);
+// //         }
+// //     };
+    
+
+// //     // Toggle Camera
+// //     const toggleCamera = () => {
+// //         if (localVideoTrack) {
+// //             localVideoTrack.enabled = !localVideoTrack.enabled;
+// //             setIsCameraOn(localVideoTrack.enabled);
+// //         }
+// //     };
+    
+
+// //     return (
+// //         <div>
+// //             <div style={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+// //                 {/* Local Video (Small Video at Bottom Right) */}
+// //                 <video 
+// //                     autoPlay 
+// //                     ref={localVideoRef} 
+// //                     width={150}  
+// //                     height={150}
+// //                     id="caller"
+// //                     style={{
+// //                         position: 'absolute',
+// //                         bottom: '20px',
+// //                         right: '20px',
+// //                         borderRadius: '10px',
+// //                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+// //                         objectFit: 'cover',
+// //                         backgroundColor: 'black',
+// //                         display: isCameraOff ? "none" : "block"  // Hide if camera is off
+// //                     }} 
+// //                 />
+
+// //                 {/* Remote Video (Main Video) */}
+// //                 <video 
+// //                     autoPlay 
+// //                     ref={remoteVideoRef} 
+// //                     width={1000} 
+// //                     height={600} 
+// //                     id="callee"
+// //                     style={{
+// //                         borderRadius: '10px',
+// //                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+// //                         objectFit: 'cover',
+// //                         backgroundColor: 'black'
+// //                     }} 
+// //                 />
+
+// //                 {/* Lobby Message */}
+// //                 {lobby ? <p style={{ position: 'absolute', top: '20px', textAlign: 'center' }}>Waiting to connect you to someone...</p> : null}
+
+// //                 {/* Control Buttons */}
+// //                 <div
+// //                     style={{
+// //                         position: "absolute",
+// //                         bottom: "20px",
+// //                         left: "50%",
+// //                         transform: "translateX(-50%)",
+// //                         display: "flex",
+// //                         gap: "20px",
+// //                     }}
+// //                 >
+// //                     {/* Camera Button */}
+// //                     <button onClick={toggleCamera} style={buttonStyle}>
+// //     {isCameraOn ? <Video size={30} /> : <VideoOff size={30} />}
+// // </button>
+
+// // <button onClick={toggleMic} style={buttonStyle}>
+// //     {isMicOn ? <Mic size={30} /> : <MicOff size={30} />}
+// // </button>
+
+
+// //                     {/* Hang Up Button */}
+// //                     <button style={{ ...buttonStyle, backgroundColor: "red" }}>
+// //                         <Phone size={30} color="white" />
+// //                     </button>
+// //                 </div>
+// //             </div>
+// //         </div>
+// //     );
+// // };
+
+// // const buttonStyle = {
+// //     backgroundColor: "#f0f0f0",
+// //     border: "none",
+// //     padding: "10px",
+// //     borderRadius: "50%",
+// //     cursor: "pointer",
+// //     display: "flex",
+// //     alignItems: "center",
+// //     justifyContent: "center",
+// // };
+
+
+// import { useEffect, useRef, useState } from "react";
+// import { useSearchParams } from "react-router-dom";
+// import { Socket, io } from "socket.io-client";
+// import { Video, VideoOff, Mic, MicOff, Phone } from "lucide-react"; // Import icons
+
+// const URL = "http://localhost:3000";
+
+// export const Room = ({
+//     name,
+//     language,
+//     localAudioTrack,
+//     localVideoTrack
+// }: {
+//     name: string,
+//     language: string,
+//     localAudioTrack: MediaStreamTrack | null,
+//     localVideoTrack: MediaStreamTrack | null,
+// }) => {
+//     const [searchParams, setSearchParams] = useSearchParams();
+//     const [lobby, setLobby] = useState(true);
+//     const [socket, setSocket] = useState<null | Socket>(null);
+//     const [sendingPc, setSendingPc] = useState<null | RTCPeerConnection>(null);
+//     const [receivingPc, setReceivingPc] = useState<null | RTCPeerConnection>(null);
+//     const [remoteVideoTrack, setRemoteVideoTrack] = useState<MediaStreamTrack | null>(null);
+//     const [remoteAudioTrack, setRemoteAudioTrack] = useState<MediaStreamTrack | null>(null);
+//     const [remoteMediaStream, setRemoteMediaStream] = useState<MediaStream | null>(null);
+//     const [isCameraOn, setIsCameraOn] = useState(true);
+//     const [isMicOn, setIsMicOn] = useState(true);
+    
+//     const remoteVideoRef = useRef<HTMLVideoElement>(null);
+//     const localVideoRef = useRef<HTMLVideoElement>(null);
+
+//     useEffect(() => {
+//         if (localVideoRef.current && localVideoTrack) {
+//             localVideoRef.current.srcObject = new MediaStream([localVideoTrack]);
+//             localVideoRef.current.play();
+//         }
+//     }, [localVideoTrack]);
+
+    
+
+//     // Toggle Mute
+//     const toggleMic = () => {
+//         if (localAudioTrack) {
+//             localAudioTrack.enabled = !localAudioTrack.enabled;
+//             setIsMicOn(localAudioTrack.enabled);
+//         }
+//     };
+    
+//     // Toggle Camera
+//     const toggleCamera = () => {
+//         if (localVideoTrack) {
+//             localVideoTrack.enabled = !localVideoTrack.enabled;
+//             setIsCameraOn(localVideoTrack.enabled);
+//         }
+//     };
+
+//     return (
+//         <div>
+//             {/* Loading Screen */}
+//             {!remoteVideoTrack && (
+//                 <div style={{
+//                     position: "absolute",
+//                     top: 0,
+//                     left: 0,
+//                     width: "100vw",
+//                     height: "100vh",
+//                     backgroundColor: "black",
+//                     display: "flex",
+//                     justifyContent: "center",
+//                     alignItems: "center",
+//                     flexDirection: "column",
+//                     color: "white",
+//                     zIndex: 1000,
+//                 }}>
+//                     <img src="https://media.tenor.com/khzZ7-YSJW4AAAAM/cargando.gif" alt="Loading..." width={100} height={100} />
+//                     <p>Connecting...</p>
+//                 </div>
+//             )}
+
+//             <div style={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+//                 {/* Local Video */}
+//                 <video 
+//                     autoPlay 
+//                     ref={localVideoRef} 
+//                     width={150}  
+//                     height={150}
+//                     id="caller"
+//                     style={{
+//                         position: 'absolute',
+//                         bottom: '20px',
+//                         right: '20px',
+//                         borderRadius: '10px',
+//                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+//                         objectFit: 'cover',
+//                         backgroundColor: 'black',
+//                         display: isCameraOn ? "block" : "none"
+//                     }} 
+//                 />
+
+//                 {/* Remote Video */}
+//                 <video 
+//                     autoPlay 
+//                     ref={remoteVideoRef} 
+//                     width={1000} 
+//                     height={600} 
+//                     id="callee"
+//                     style={{
+//                         borderRadius: '10px',
+//                         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+//                         objectFit: 'cover',
+//                         backgroundColor: 'black'
+//                     }} 
+//                 />
+
+//                 {/* Lobby Message */}
+//                 {lobby ? <p style={{ position: 'absolute', top: '20px', textAlign: 'center' }}>Waiting to connect you to someone...</p> : null}
+
+//                 {/* Control Buttons */}
+//                 <div
+//                     style={{
+//                         position: "absolute",
+//                         bottom: "20px",
+//                         left: "50%",
+//                         transform: "translateX(-50%)",
+//                         display: "flex",
+//                         gap: "20px",
+//                     }}
+//                 >
+//                     {/* Camera Button */}
+//                     <button onClick={toggleCamera} style={buttonStyle}>
+//                         {isCameraOn ? <Video size={30} /> : <VideoOff size={30} />}
+//                     </button>
+
+//                     {/* Mic Button */}
+//                     <button onClick={toggleMic} style={buttonStyle}>
+//                         {isMicOn ? <Mic size={30} /> : <MicOff size={30} />}
+//                     </button>
+
+//                     {/* Hang Up Button */}
+//                     <button style={{ ...buttonStyle, backgroundColor: "red" }}>
+//                         <Phone size={30} color="white" />
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+const buttonStyle = {
+    backgroundColor: "#f0f0f0",
+    border: "none",
+    padding: "10px",
+    borderRadius: "50%",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+};
+
+
+
+import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
+import { Video, VideoOff, Mic, MicOff, Phone } from "lucide-react"; // Import icons
 
-const URL = "https://langualink-1-1.onrender.com";
+const URL = "http://localhost:3000";
 
 export const Room = ({
     name,
@@ -15,6 +323,10 @@ export const Room = ({
     localAudioTrack: MediaStreamTrack | null,
     localVideoTrack: MediaStreamTrack | null,
 }) => {
+    
+    const [isCameraOn, setIsCameraOn] = useState(true);
+    const [isMicOn, setIsMicOn] = useState(true);
+
     const [searchParams, setSearchParams] = useSearchParams();
     const [lobby, setLobby] = useState(true);
     const [socket, setSocket] = useState<null | Socket>(null);
@@ -191,7 +503,7 @@ export const Room = ({
         })
 
         setSocket(socket)
-    }, [name])
+    }, [])
 
     useEffect(() => {
         if (localVideoRef.current) {
@@ -202,12 +514,93 @@ export const Room = ({
         }
     }, [localVideoRef])
 
-    return <div>
-        Hi i am {name}
-        Going to learn {language}
-        <video autoPlay width={400} height={400} ref={localVideoRef} />
-        {lobby ? "Waiting to connect you to someone" : null}
-        <video autoPlay width={400} height={400} ref={remoteVideoRef} />
-    </div>
-}
 
+    const toggleMic = () => {
+        if (localAudioTrack) {
+            localAudioTrack.enabled = !localAudioTrack.enabled;
+            setIsMicOn(localAudioTrack.enabled);
+        }
+    };
+
+    const toggleCamera = () => {
+        if (localVideoTrack) {
+            localVideoTrack.enabled = !localVideoTrack.enabled;
+            setIsCameraOn(localVideoTrack.enabled);
+        }
+    };
+
+    const buttonStyle = {
+        borderRadius: "50%",
+        width: "50px",
+        height: "50px",
+        border: "none",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#fff",
+        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+        cursor: "pointer",
+    };
+
+    return (
+        <div style={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            {/* Local Video */}
+            
+            <video
+                autoPlay
+                ref={localVideoRef}
+                width={150}
+                height={150}
+                id="caller"
+                style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    right: '20px',
+                    borderRadius: '10px',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                    objectFit: 'cover',
+                    backgroundColor: 'black',
+                    display: isCameraOn ? "block" : "none"
+                }}
+            />
+            {/* Remote Video */}
+            <video
+                autoPlay
+                ref={remoteVideoRef}
+                width={1000}
+                height={600}
+                id="callee"
+                style={{
+                    borderRadius: '10px',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                    objectFit: 'cover',
+                    backgroundColor: 'black'
+                }}
+            />
+            {/* Lobby Message */}
+            {lobby ? <p style={{ position: 'absolute', top: '20px', textAlign: 'center' }}>Waiting to connect you to someone...</p> : null}
+            {/* Control Buttons */}
+            <div style={{
+                position: "absolute",
+                bottom: "20px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: "20px",
+            }}>
+                {/* Camera Button */}
+                <button onClick={toggleCamera} style={buttonStyle}>
+                    {isCameraOn ? <Video size={30} /> : <VideoOff size={30} />}
+                </button>
+                {/* Mic Button */}
+                <button onClick={toggleMic} style={buttonStyle}>
+                    {isMicOn ? <Mic size={30} /> : <MicOff size={30} />}
+                </button>
+                {/* Hang Up Button */}
+                <button style={{ ...buttonStyle, backgroundColor: "red" }}>
+                    <Phone size={30} color="white" />
+                </button>
+            </div>
+        </div>
+    );
+};

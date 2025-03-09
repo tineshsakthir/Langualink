@@ -11,6 +11,11 @@ export const Landing = () => {
 
     const [joined, setJoined] = useState(false);
 
+    useEffect(() => {
+        setLanguage("Tamil");
+        setJoined(true);
+    }, []);
+
     const getCam = async () => {
         const stream = await window.navigator.mediaDevices.getUserMedia({
             video: true,
