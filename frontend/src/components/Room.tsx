@@ -304,7 +304,7 @@ const buttonStyle = {
 };
 
 
-
+import CallTimer from "./CallTimer";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
@@ -323,6 +323,8 @@ export const Room = ({
     localAudioTrack: MediaStreamTrack | null,
     localVideoTrack: MediaStreamTrack | null,
 }) => {
+
+    const uuid = "92929ufiu";
     
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMicOn, setIsMicOn] = useState(true);
@@ -337,14 +339,28 @@ export const Room = ({
     const [remoteMediaStream, setRemoteMediaStream] = useState<MediaStream | null>(null);
     const remoteVideoRef = useRef<HTMLVideoElement>();
     const localVideoRef = useRef<HTMLVideoElement>();
+    const [isCallActive, setIsCallActive] = useState<boolean>(false);
+
+
+    useEffect(() => {
+        if (remoteVideoTrack || remoteAudioTrack) {
+            setIsCallActive(true);
+        } else {
+            setIsCallActive(false);
+        }
+    } ),[remoteVideoTrack,remoteAudioTrack];
 
     useEffect(() => {
         const socket = io(URL);
-        socket.emit("user-info", name, language);
-        socket.on('send-offer', async ({roomId}) => {
+        // socket.emit("user-info", name, language);
+        
+        socket.emit("user-info",  uuid, name, language );
+
+        socket.on('send-offer', async ({roomId ,partnerUuid}) => {
             console.log("sending offer");
             setLobby(false);
             const pc = new RTCPeerConnection();
+            console.log(partnerUuid);
 
             setSendingPc(pc);
             if (localVideoTrack) {
@@ -368,6 +384,7 @@ export const Room = ({
                    })
                 }
             }
+            
 
             pc.onnegotiationneeded = async () => {
                 console.log("on negotiation neeeded, sending offer");
@@ -381,9 +398,11 @@ export const Room = ({
             }
         });
 
-        socket.on("offer", async ({roomId, sdp: remoteSdp}) => {
+        socket.on("offer", async ({roomId, sdp: remoteSdp ,uuid}) => {
             console.log("received offer");
             setLobby(false);
+            //get details
+            console.log(uuid);
             const pc = new RTCPeerConnection();
             pc.setRemoteDescription(remoteSdp)
             const sdp = await pc.createAnswer();
@@ -431,7 +450,8 @@ export const Room = ({
 
             socket.emit("answer", {
                 roomId,
-                sdp: sdp
+                sdp: sdp,
+                uuid:uuid
             });
             setTimeout(() => {
                 const track1 = pc.getTransceivers()[0].receiver.track
@@ -543,9 +563,11 @@ export const Room = ({
     };
 
     return (
+        <div>
+            <CallTimer isCallActive={isCallActive} />
         <div style={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {/* Local Video */}
-            
+        
             <video
                 autoPlay
                 ref={localVideoRef}
@@ -600,6 +622,8 @@ export const Room = ({
                 <button style={{ ...buttonStyle, backgroundColor: "red" }}>
                     <Phone size={30} color="white" />
                 </button>
+            </div>
+
             </div>
         </div>
     );

@@ -5,6 +5,7 @@ export interface User {
     socket: Socket;
     name: string;
     language : string;
+    uuid: string;
 }
 
 export class UserManager {
@@ -21,7 +22,9 @@ export class UserManager {
         this.languageQueue = {};
     }
 
-    addUser(name: string, socket: Socket, language: string) {
+    addUser(name: string, socket: Socket, language: string,uuid: string  ) {
+         console.log(name, socket.toString(),language,uuid);
+         if(language !== undefined && name !== undefined && uuid !== undefined){
 
         language = language.trim().toLocaleLowerCase();
         if (!this.laguageUsers[language]) {
@@ -31,7 +34,8 @@ export class UserManager {
             this.languageQueue[language] = [];
         }
 
-        this.laguageUsers[language].push({name, socket, language});
+        this.laguageUsers[language].push({name, socket, language,uuid});
+        console.log('**********',this.laguageUsers[language][this.laguageUsers[language].length-1]);
         this.languageQueue[language].push(socket.id);
 
         // if (language === "Tamil") {
@@ -45,6 +49,7 @@ export class UserManager {
         socket.emit("lobby");
         this.clearQueue(language)
         this.initHandlers(socket);
+    }
     }
 
     removeUser(socketId: string) {
@@ -115,11 +120,11 @@ export class UserManager {
 
 
     initHandlers(socket: Socket) {
-        socket.on("offer", ({sdp, roomId}: {sdp: string, roomId: string}) => {
-            this.roomManager.onOffer(roomId, sdp, socket.id);
+        socket.on("offer", ({sdp, roomId ,uuid}: {sdp: string, roomId: string ,uuid:string}) => {
+            this.roomManager.onOffer(roomId, sdp, socket.id ,uuid);
         })
 
-        socket.on("answer",({sdp, roomId}: {sdp: string, roomId: string}) => {
+        socket.on("answer",({sdp, roomId ,uuid}: {sdp: string, roomId: string ,uuid:string}) => {
             this.roomManager.onAnswer(roomId, sdp, socket.id);
         })
 

@@ -17,8 +17,9 @@ const io = new socket_io_1.Server(server, {
 const userManager = new UserManger_1.UserManager();
 io.on('connection', (socket) => {
     console.log('A user connected');
-    socket.on("user-info", (name, language) => {
-        userManager.addUser(name, socket, language);
+    socket.on("user-info", (uuid, name, language) => {
+        console.log(uuid);
+        userManager.addUser(name, socket, language, uuid);
     });
     socket.on("disconnect", () => {
         console.log("User disconnected");

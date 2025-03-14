@@ -2,13 +2,14 @@ import React, { useState,useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // React Router for navigation
 const serverDomain = import.meta.env.VITE_SERVER_DOMAIN;
-
+import { useSelector, useDispatch } from "react-redux";
 
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Initialize navigation
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -33,7 +34,22 @@ const Login = () => {
         // Navigate to Home Page
         //setup redux and navigate to home page
 
+        //fetch user details 
+
+        try {
+       
+        const res = await axios.get(`${serverDomain}/users/me?token=${response.data.token}`);
+        dispatch(setUser(res.data.user));
+        localStorage.setItem("authToken", response.data.token);
+        
+           
+      } catch (error) {
+          console.log(error);
+      }
+
         navigate("/");
+
+      
 
         // Store Token in LocalStorage
         console.log("Token:", response.data.token);
@@ -94,6 +110,7 @@ const Login = () => {
 
 // Styles
 import { CSSProperties } from "react";
+import { setUser } from "../redux/authSlice";
 const styles: { [key: string]: CSSProperties } = {
   loginContainer: {
     display: "flex",

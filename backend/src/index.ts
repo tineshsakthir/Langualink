@@ -18,8 +18,9 @@ const userManager = new UserManager();
 io.on('connection', (socket: Socket) => {
   console.log('A user connected');
   
-  socket.on("user-info", (name: string, language: string) => {
-    userManager.addUser(name, socket, language);
+  socket.on("user-info", (uuid:string, name: string, language: string) => {
+    console.log(uuid);
+    userManager.addUser(name, socket, language, uuid);
   });
 
   socket.on("disconnect", () => {

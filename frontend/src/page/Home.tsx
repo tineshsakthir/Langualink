@@ -1,12 +1,33 @@
-import React from "react";
-import { FaLanguage, FaPhoneAlt, FaEnvelope, FaCog, FaUserEdit, FaSignOutAlt,FaFire } from "react-icons/fa"; // Importing icons
-import { useState,useEffect ,useRef} from "react";
-// import ProgressBar from "../components/ProgressBar";
+import React, { useState, useEffect } from "react";
+import { FaLanguage, FaPhoneAlt, FaEnvelope, FaCog, FaUserEdit, FaSignOutAlt, FaFire } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import ProgressBar from "../components/ProgressBar";
+import BarChart from "../components/BarChart";
 
 const Home = () => {
+  const navigate = useNavigate();
+  const [greeting, setGreeting] = useState("");
+  const [streak, setStreak] = useState(5);
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    console.log(token);
+    if(!token) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    const hours = new Date().getHours();
+    if (hours < 12) {
+      setGreeting("Good Morning");
+    } else if (hours < 18) {
+      setGreeting("Good Afternoon");
+    } else {
+      setGreeting("Good Evening");
+    }
+  }, []);
+
   const styles: { [key: string]: React.CSSProperties } = {
     container: {
       display: "flex",
@@ -24,7 +45,8 @@ const Home = () => {
       padding: "15px",
       textAlign: "center",
       display: "flex",
-        justifyContent: "space-between",
+      justifyContent: "space-between",
+      alignItems: "center",
     },
     main: {
       flex: 1,
@@ -43,33 +65,63 @@ const Home = () => {
     listItem: {
       padding: "10px",
       cursor: "pointer",
-
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      transition: "background 0.3s",
     },
     listItemHover: {
       backgroundColor: "#444",
     },
+    streak: {
+      display: "flex",
+      alignItems: "center",
+      gap: "5px",
+      fontWeight: "bold",
+    },
+    fireIcon: {
+      color: "orange",
+    },
+    buttonContainer: {
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "1rem",
+      backgroundColor: "#28a745",
+      padding: "1.5rem",
+      borderRadius: "8px",
+      marginBottom: "20px",
+    },
+    button: {
+      padding: "0.75rem 1.5rem",
+      backgroundColor: "#fff",
+      color: "#28a745",
+      border: "2px solid #28a745",
+      borderRadius: "6px",
+      fontSize: "1rem",
+      fontWeight: "bold",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+    },
   };
-  useEffect(() => {
-    const hours = new Date().getHours();
-    if (hours < 12) {
-      setGreeting("Good Morning");
-    } else if (hours < 18) {
-      setGreeting("Good Afternoon");
-    } else {
-      setGreeting("Good Evening");
-    }
-  }, []);
-
-  const [greeting, setGreeting] = useState("");
-  const [streak, setStreak] = useState(5); 
 
   const menuItems = [
-    { name: "Change Language", icon: <FaLanguage style={styles.icon} /> },
-    { name: "Call History", icon: <FaPhoneAlt style={styles.icon} /> },
-    { name: "Contact Us", icon: <FaEnvelope style={styles.icon} /> },
-    { name: "Settings", icon: <FaCog style={styles.icon} /> },
-    { name: "Edit Profile", icon: <FaUserEdit style={styles.icon} /> },
-    { name: "Logout", icon: <FaSignOutAlt style={styles.icon} /> },
+    { name: "Change Language", icon: <FaLanguage /> },
+    { name: "Call History", icon: <FaPhoneAlt /> },
+    { name: "Contact Us", icon: <FaEnvelope /> },
+    { name: "Settings", icon: <FaCog /> },
+    { name: "Edit Profile", icon: <FaUserEdit /> },
+    { name: "Logout", icon: <FaSignOutAlt /> },
+  ];
+
+  const data = [
+    { day: "Sun", time: 30 },
+    { day: "Mon", time: 40 },
+    { day: "Tue", time: 35 },
+    { day: "Wed", time: 50 },
+    { day: "Thu", time: 45 },
+    { day: "Fri", time: 60 },
+    { day: "Sat", time: 55 },
   ];
 
   return (
@@ -86,9 +138,7 @@ const Home = () => {
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               {item.icon}
-              <div style={{ display: "inline-block", marginLeft: "10px" }}>
-              {item.name}
-            </div>
+              <span>{item.name}</span>
             </li>
           ))}
         </ul>
@@ -96,80 +146,57 @@ const Home = () => {
 
       {/* Main Content */}
       <div style={styles.main}>
-      <header style={styles.header}>
-      <div>{greeting}! Sudarsanam G 👋</div>
-      <div style={styles.streak}>
-        <FaFire style={styles.fireIcon} />
-        {streak}-Day Streak
-      </div>
-    </header>
+   
+        <header style={styles.header}>
+          <div>{greeting}! Sudarsanam G 👋</div>
+          <div style={styles.streak}>
+            <FaFire style={styles.fireIcon} />
+            {streak}-Day Streak
+          </div>
+        </header>
+        <div style={{ marginTop: "20px",marginBottom:'40px' }}>
+            <ProgressBar  />
+          </div>
         <div style={styles.content}>
-        <div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: "1rem",
-    backgroundColor: "#28a745", // Green background
-    padding: "1.5rem",
-    borderRadius: "8px",
-  }}
->
-  <button
-    style={{
-      padding: "0.75rem 1.5rem",
-      backgroundColor: "#fff",
-      color: "#28a745",
-      border: "2px solid #28a745",
-      borderRadius: "6px",
-      fontSize: "1rem",
-      fontWeight: "bold",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-    }}
-    onMouseOver={(e) => {
-      e.currentTarget.style.backgroundColor = "#218838";
-      e.currentTarget.style.color = "#fff";
-    }}
-    onMouseOut={(e) => {
-      e.currentTarget.style.backgroundColor = "#fff";
-      e.currentTarget.style.color = "#28a745";
-    }}
+          {/* Button Section */}
+          
+          <div style={styles.buttonContainer}>
+            <button
+              style={styles.button}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#218838";
+                e.currentTarget.style.color = "#fff";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#fff";
+                e.currentTarget.style.color = "#28a745";
+              }}
+              onClick={() => navigate("/landing")}
+            >
+              Connect with co-learners
+            </button>
 
-    onClick={() => {
-        navigate("/landing");
-    }}
-  >
-    Connect with co-learners
-  </button>
+            <button
+              style={styles.button}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#218838";
+                e.currentTarget.style.color = "#fff";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#fff";
+                e.currentTarget.style.color = "#28a745";
+              }}
+            >
+              Create a room
+            </button>
+          </div>
 
-  <button
-    style={{
-      padding: "0.75rem 1.5rem",
-      backgroundColor: "#fff",
-      color: "#28a745",
-      border: "2px solid #28a745",
-      borderRadius: "6px",
-      fontSize: "1rem",
-      fontWeight: "bold",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-    }}
-    onMouseOver={(e) => {
-      e.currentTarget.style.backgroundColor = "#218838";
-      e.currentTarget.style.color = "#fff";
-    }}
-    onMouseOut={(e) => {
-      e.currentTarget.style.backgroundColor = "#fff";
-      e.currentTarget.style.color = "#28a745";
-    }}
-  >
-    Create a room
-  </button>
-</div>
-  <div>
-    {/* <ProgressBar /> */}
-  </div>
+          {/* Progress Bar Section */}
+         
+
+          <div style={{ marginTop: "80px" }}>
+            <BarChart data={data} />
+          </div>
 
         </div>
       </div>
