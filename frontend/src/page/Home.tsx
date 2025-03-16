@@ -213,7 +213,6 @@ const Home = () => {
 
               }}
 
-              disabled={!isDisabled}
             >
               Connect with co-learners
             </button>
@@ -229,14 +228,18 @@ const Home = () => {
                 e.currentTarget.style.color = "#28a745";
               }}
 
+              onClick={()=>{
+                // window.location.href = "";
+                window.location.replace("http://localhost:3001/")
+              }}
+
               
-              disabled={!isDisabled}
 
             >
               Create a room
             </button>
 
-            <button
+            {/* <button
               style={styles.button}
               onMouseOver={(e) => {
                 e.currentTarget.style.backgroundColor = "#218838";
@@ -252,7 +255,7 @@ const Home = () => {
 
             >
               Join a room
-            </button>
+            </button> */}
           </div>
 
           {/* Progress Bar Section */}
