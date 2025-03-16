@@ -315,7 +315,9 @@ import { useNavigate } from "react-router-dom";
 
 
 
-const URL = "http://localhost:3000";
+// const URL = "http://localhost:3000";
+const URL = "https://langualink-1-2.onrender.com";
+
 
 export const Room = ({
     name,
