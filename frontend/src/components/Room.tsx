@@ -315,8 +315,8 @@ import { useNavigate } from "react-router-dom";
 
 
 
-// const URL = "http://localhost:3000";
-const URL = "https://langualink-1-2.onrender.com";
+const URL = "http://localhost:3000";  
+// const URL = "https://langualink-1-2.onrender.com";
 
 
 export const Room = ({
@@ -597,7 +597,7 @@ export const Room = ({
 
                 //handle rating
 
-        navigate("/feedback");
+        navigate("/feedback", { state: { userUuid: partnerUuid} });
 
 
 

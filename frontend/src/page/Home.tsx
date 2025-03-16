@@ -4,24 +4,44 @@ import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import BarChart from "../components/BarChart";
 import { useSelector } from "react-redux";
+import axios from "axios";
+const serverDomain = import.meta.env.VITE_SERVER_DOMAIN;
+
+
 
 const Home = () => {
   const navigate = useNavigate();
   const [greeting, setGreeting] = useState("");
   const [streak, setStreak] = useState(5);
   const user = useSelector((state: any) => state.auth);
-  console.log(user.firstName)
+  const [isDisabled, setIsDisabled] = useState(false);
 
 
 
+  const token = localStorage.getItem("authToken");
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    console.log(token);
 
     if(user.firstName==='') {
       navigate("/login");
     }
   }, []);
+
+
+  useEffect( () => {
+    //get user and if is active then make connect to one to one as disabled
+    const fetchData = async () => {
+    const user = await axios.get(`${serverDomain}/users/me?token=${token}`);
+   
+    if(user.data.user.isActive){
+      //disable the button
+      setIsDisabled(true);
+      alert('You are suspended for temperoery')
+    }
+  }
+
+  fetchData();
+
+  },[])
 
   useEffect(() => {
     const hours = new Date().getHours();
@@ -184,7 +204,16 @@ const Home = () => {
                 e.currentTarget.style.backgroundColor = "#fff";
                 e.currentTarget.style.color = "#28a745";
               }}
-              onClick={() => navigate("/landing")}
+              onClick={() =>{
+                if(!isDisabled){
+                  alert('You are suspended for temperoery')
+                  return 
+                }
+                 navigate("/landing")
+
+              }}
+
+              disabled={!isDisabled}
             >
               Connect with co-learners
             </button>
@@ -199,8 +228,30 @@ const Home = () => {
                 e.currentTarget.style.backgroundColor = "#fff";
                 e.currentTarget.style.color = "#28a745";
               }}
+
+              
+              disabled={!isDisabled}
+
             >
               Create a room
+            </button>
+
+            <button
+              style={styles.button}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = "#218838";
+                e.currentTarget.style.color = "#fff";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = "#fff";
+                e.currentTarget.style.color = "#28a745";
+              }}
+
+              
+              disabled={!isDisabled}
+
+            >
+              Join a room
             </button>
           </div>
 
