@@ -6,7 +6,6 @@
       "config": {
         "distDir": "frontend/dist"
       }
-    }
   ],
   "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
   
