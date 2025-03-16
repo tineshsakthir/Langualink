@@ -3,16 +3,22 @@ import { FaLanguage, FaPhoneAlt, FaEnvelope, FaCog, FaUserEdit, FaSignOutAlt, Fa
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import BarChart from "../components/BarChart";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const navigate = useNavigate();
   const [greeting, setGreeting] = useState("");
   const [streak, setStreak] = useState(5);
+  const user = useSelector((state: any) => state.auth);
+  console.log(user.firstName)
+
+
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     console.log(token);
-    if(!token) {
+
+    if(user.firstName==='') {
       navigate("/login");
     }
   }, []);
@@ -108,10 +114,10 @@ const Home = () => {
   const menuItems = [
     { name: "Change Language", icon: <FaLanguage /> },
     { name: "Call History", icon: <FaPhoneAlt /> },
-    { name: "Contact Us", icon: <FaEnvelope /> },
-    { name: "Settings", icon: <FaCog /> },
-    { name: "Edit Profile", icon: <FaUserEdit /> },
-    { name: "Logout", icon: <FaSignOutAlt /> },
+    { name: "Contact Us", icon: <FaEnvelope /> ,nav: "/contact-us" },
+    { name: "Settings", icon: <FaCog /> ,nav: "/settings" },
+    { name: "Edit Profile", icon: <FaUserEdit /> ,nav: "/edit-profile" },
+    { name: "Logout", icon: <FaSignOutAlt /> , nav: "/login" },
   ];
 
   const data = [
@@ -138,7 +144,14 @@ const Home = () => {
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
             >
               {item.icon}
-              <span>{item.name}</span>
+              <span onClick={()=>{
+                if(item.nav){
+                  if(item.name === "Logout"){
+                    localStorage.removeItem("authToken");
+                  }
+                  navigate(item.nav)
+                }
+              }}>{item.name}</span>
             </li>
           ))}
         </ul>
@@ -148,7 +161,7 @@ const Home = () => {
       <div style={styles.main}>
    
         <header style={styles.header}>
-          <div>{greeting}! Sudarsanam G 👋</div>
+          <div>{greeting}! {user.firstName} 👋</div>
           <div style={styles.streak}>
             <FaFire style={styles.fireIcon} />
             {streak}-Day Streak

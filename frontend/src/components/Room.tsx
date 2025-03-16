@@ -308,7 +308,12 @@ import CallTimer from "./CallTimer";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
-import { Video, VideoOff, Mic, MicOff, Phone } from "lucide-react"; // Import icons
+import { Video, VideoOff, Mic, MicOff, Phone, User } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const URL = "http://localhost:3000";
 
@@ -323,8 +328,11 @@ export const Room = ({
     localAudioTrack: MediaStreamTrack | null,
     localVideoTrack: MediaStreamTrack | null,
 }) => {
+    
 
-    const uuid = "92929ufiu";
+    const uuid = useSelector((state: any) => state.auth.userUuid);
+
+    const navigate = useNavigate();
     
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMicOn, setIsMicOn] = useState(true);
@@ -340,6 +348,14 @@ export const Room = ({
     const remoteVideoRef = useRef<HTMLVideoElement>();
     const localVideoRef = useRef<HTMLVideoElement>();
     const [isCallActive, setIsCallActive] = useState<boolean>(false);
+    const [partnerUuid, setPartnerUuid] = useState<string | null>(null);
+    const partner = {
+        name: "Aarav Sharma",
+        rating: 4.7,
+        country: "India",
+        interests: ["Music", "Travel", "Photography"]
+    };
+    
 
 
     useEffect(() => {
@@ -361,6 +377,12 @@ export const Room = ({
             setLobby(false);
             const pc = new RTCPeerConnection();
             console.log(partnerUuid);
+            setPartnerUuid(partnerUuid);
+            console.log(partnerUuid + "partner uuid");
+            
+
+
+            
 
             setSendingPc(pc);
             if (localVideoTrack) {
@@ -384,7 +406,7 @@ export const Room = ({
                    })
                 }
             }
-            
+
 
             pc.onnegotiationneeded = async () => {
                 console.log("on negotiation neeeded, sending offer");
@@ -490,6 +512,7 @@ export const Room = ({
                 return pc;
             });
             console.log("loop closed");
+
         })
 
         socket.on("lobby", () => {
@@ -523,7 +546,18 @@ export const Room = ({
         })
 
         setSocket(socket)
-    }, [])
+    }, [partnerUuid])
+
+
+
+    useEffect(() => {
+        //get details of the partner
+
+    },[partnerUuid])
+
+
+
+
 
     useEffect(() => {
         if (localVideoRef.current) {
@@ -549,6 +583,30 @@ export const Room = ({
         }
     };
 
+    const handleDisconnect = () => {
+        // if (socket) {
+        //     socket.emit("disconnect");
+        //     socket.disconnect();
+        // }
+        console.log('My uuid', uuid);
+        console.log('partner uuid ',partnerUuid);
+
+        // handle history 
+
+                //handle rating
+
+        navigate("/feedback");
+
+
+
+        // window.location.href = "/"; 
+
+
+
+
+
+    }
+
     const buttonStyle = {
         borderRadius: "50%",
         width: "50px",
@@ -564,10 +622,49 @@ export const Room = ({
 
     return (
         <div>
-            <CallTimer isCallActive={isCallActive} />
+        <CallTimer isCallActive={isCallActive} />
         <div style={{ position: 'relative', height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            
+            {/* Partner Details (Left Side) */}
+            <div style={{
+                position: 'absolute',
+                left: '20px',
+                top: '30%',
+                transform: 'translateY(-50%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                width: '250px'
+            }}>
+                <h3>{partner.name}</h3>
+                <p><strong>Rating:</strong> ⭐ {partner.rating}</p>
+                <p><strong>Country:</strong> {partner.country}</p>
+                <p><strong>Interests:</strong></p>
+                <ul>
+                    {partner.interests.map((interest, index) => (
+                        <li key={index}>{interest}</li>
+                    ))}
+                </ul>
+            </div>
+    
+            {/* Remote Video */}
+            <video
+                autoPlay
+                ref={remoteVideoRef}
+                width={1000}
+                height={600}
+                id="callee"
+                style={{
+                    borderRadius: '10px',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
+                    objectFit: 'cover',
+                    backgroundColor: 'black'
+                }}
+            />
+    
             {/* Local Video */}
-        
             <video
                 autoPlay
                 ref={localVideoRef}
@@ -585,22 +682,10 @@ export const Room = ({
                     display: isCameraOn ? "block" : "none"
                 }}
             />
-            {/* Remote Video */}
-            <video
-                autoPlay
-                ref={remoteVideoRef}
-                width={1000}
-                height={600}
-                id="callee"
-                style={{
-                    borderRadius: '10px',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-                    objectFit: 'cover',
-                    backgroundColor: 'black'
-                }}
-            />
+    
             {/* Lobby Message */}
             {lobby ? <p style={{ position: 'absolute', top: '20px', textAlign: 'center' }}>Waiting to connect you to someone...</p> : null}
+    
             {/* Control Buttons */}
             <div style={{
                 position: "absolute",
@@ -610,21 +695,21 @@ export const Room = ({
                 display: "flex",
                 gap: "20px",
             }}>
-                {/* Camera Button */}
                 <button onClick={toggleCamera} style={buttonStyle}>
                     {isCameraOn ? <Video size={30} /> : <VideoOff size={30} />}
                 </button>
-                {/* Mic Button */}
                 <button onClick={toggleMic} style={buttonStyle}>
                     {isMicOn ? <Mic size={30} /> : <MicOff size={30} />}
                 </button>
-                {/* Hang Up Button */}
-                <button style={{ ...buttonStyle, backgroundColor: "red" }}>
+                <button style={{ ...buttonStyle, backgroundColor: "red" }} onClick={handleDisconnect}>
                     <Phone size={30} color="white" />
                 </button>
             </div>
-
-            </div>
         </div>
+    </div>
+    
+
     );
 };
+
+

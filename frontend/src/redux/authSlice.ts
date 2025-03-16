@@ -28,8 +28,8 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserState>) => {
-      Object.assign(state, action.payload);
+    setUser: (initialState, action: PayloadAction<UserState>) => {
+      Object.assign(initialState, action.payload);
     },
     clearUser: (state) => {
       Object.assign(state, initialState);
