@@ -8,6 +8,7 @@ import Settings from "./page/Settings";
 import ContactUs from "./page/ContactUs";
 import EditProfile from "./page/EditProfile";
 import FeedbackPage from "./page/FeedbackPage";
+import AvailableRooms from "./page/AvailableRooms";
 
 function App() {
 
@@ -21,6 +22,8 @@ function App() {
         <Route path="/settings" element={<Settings />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/available-rooms" element={<AvailableRooms />} />
+
 
 
 

@@ -1,9 +1,19 @@
 import { useState, CSSProperties } from "react";
+import { useLocation } from "react-router-dom";
+const serverDomain = import.meta.env.VITE_SERVER_DOMAIN;
+import { useNavigate } from "react-router-dom";
+
 
 const FeedbackPage = () => {
+
+    const location = useLocation();
+    const navigate = useNavigate();
+    const userUuid = location.state?.userUuid; // Retrieve the user UUID
+
     const [feedbackType, setFeedbackType] = useState(""); // "like" or "report"
     const [selectedReason, setSelectedReason] = useState("");
     const [customMessage, setCustomMessage] = useState("");
+
 
     const likeOptions = [
         "Good audio quality",
@@ -21,25 +31,42 @@ const FeedbackPage = () => {
         "Other",
     ];
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!feedbackType) {
             alert("Please select 'Like' or 'Report'.");
             return;
         }
-
+    
         if (!selectedReason && !customMessage) {
             alert("Please select a reason or enter a message.");
             return;
         }
-
-        // onSubmit({
-        //     type: feedbackType,
-        //     reason: selectedReason || "Custom",
-        //     message: customMessage,
-        // });
-
-        // onClose();
+    
+        try {
+            const response = await fetch(`${serverDomain}/users/feedback`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userUuid,
+                    type: feedbackType, // "like" or "report"
+                }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                alert("Feedback submitted successfully.");
+                navigate("/");
+                
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        } catch (error) {
+            console.error("Error submitting feedback:", error);
+            alert("Something went wrong.");
+        }
     };
+    
 
     return (
         <div style={containerStyle}>
@@ -95,7 +122,7 @@ const FeedbackPage = () => {
 
                 {/* Buttons */}
                 <div style={buttonContainerStyle}>
-                    <button  style={submitButtonStyle}>Submit</button>
+                    <button  style={submitButtonStyle} onClick={handleSubmit}>Submit</button>
                     <button  style={cancelButtonStyle}>Cancel</button>
                 </div>
             </div>
