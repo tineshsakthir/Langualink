@@ -8,7 +8,7 @@ const express_1 = __importDefault(require("express"));
 const socket_io_1 = require("socket.io");
 const UserManger_1 = require("./managers/UserManger");
 const app = (0, express_1.default)();
-const server = http_1.default.createServer(http_1.default);
+const server = http_1.default.createServer(app); // ✅ Pass `app`, not `http`
 const io = new socket_io_1.Server(server, {
     cors: {
         origin: "*"
@@ -16,15 +16,16 @@ const io = new socket_io_1.Server(server, {
 });
 const userManager = new UserManger_1.UserManager();
 io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on("user-info", (name, language) => {
-        userManager.addUser(name, socket, language);
+    console.log('A user connected');
+    socket.on("user-info", (uuid, name, language) => {
+        console.log(uuid);
+        userManager.addUser(name, socket, language, uuid);
     });
     socket.on("disconnect", () => {
-        console.log("user disconnected");
+        console.log("User disconnected");
         userManager.removeUser(socket.id);
     });
 });
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+server.listen(3000, "0.0.0.0", () => {
+    console.log('Listening on *:3000');
 });

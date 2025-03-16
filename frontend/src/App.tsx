@@ -2,13 +2,31 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Landing } from './components/Landing';
 import { Room } from './components/Room';
+import  Home  from "./page/Home";
+import Login from "./page/Login";
+import Settings from "./page/Settings";
+import ContactUs from "./page/ContactUs";
+import EditProfile from "./page/EditProfile";
+import FeedbackPage from "./page/FeedbackPage";
 
 function App() {
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/feedback" element={<FeedbackPage />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+
+
+
+
+
+
       </Routes>
     </BrowserRouter>
   )

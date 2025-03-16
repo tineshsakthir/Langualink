@@ -1,15 +1,24 @@
 import { useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom";
 import { Room } from "./Room";
+import { useSelector, useDispatch } from "react-redux";
+
 
 export const Landing = () => {
-    const [name, setName] = useState("");
+    const name = useSelector((state: any) => state.auth.firstName);
+    console.log(name);
     const [language, setLanguage] = useState("");
     const [localAudioTrack, setLocalAudioTrack] = useState<MediaStreamTrack | null>(null);
     const [localVideoTrack, setlocalVideoTrack] = useState<MediaStreamTrack | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const [joined, setJoined] = useState(false);
+    
+
+    useEffect(() => {
+        setLanguage("Tamil");
+        setJoined(true);
+    }, []);
 
     const getCam = async () => {
         const stream = await window.navigator.mediaDevices.getUserMedia({
@@ -39,11 +48,6 @@ export const Landing = () => {
 
         return <div>
             <video autoPlay ref={videoRef}></video>
-            <input type="text" onChange={(e) => {
-                setName(e.target.value);
-            }}>
-            </input>
-
             <p>Select a Room:</p>
             {["Tamil", "English", "Spanish", "Arabic", "Hindi"].map((room) => (
                 <button
@@ -67,6 +71,7 @@ export const Landing = () => {
             }}>Join</button>
         </div>
     }
+
 
     return <Room name={name} language={language} localAudioTrack={localAudioTrack} localVideoTrack={localVideoTrack} />
 }

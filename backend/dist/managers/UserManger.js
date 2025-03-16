@@ -8,26 +8,30 @@ class UserManager {
         this.laguageUsers = {};
         this.languageQueue = {};
     }
-    addUser(name, socket, language) {
-        language = language.trim().toLocaleLowerCase();
-        if (!this.laguageUsers[language]) {
-            this.laguageUsers[language] = [];
+    addUser(name, socket, language, uuid) {
+        console.log(name, socket.toString(), language, uuid);
+        if (language !== undefined && name !== undefined && uuid !== undefined) {
+            language = language.trim().toLocaleLowerCase();
+            if (!this.laguageUsers[language]) {
+                this.laguageUsers[language] = [];
+            }
+            if (!this.languageQueue[language]) {
+                this.languageQueue[language] = [];
+            }
+            this.laguageUsers[language].push({ name, socket, language, uuid });
+            console.log('**********', this.laguageUsers[language][this.laguageUsers[language].length - 1]);
+            this.languageQueue[language].push(socket.id);
+            // if (language === "Tamil") {
+            //     this.Tamilusers.push({name, socket, language});
+            //     this.Tamilqueue.push(socket.id);
+            // } else if (language === "English") {
+            //     this.Englishusers.push({name, socket, language});
+            //     this.Englishqueue.push(socket.id);
+            // }
+            socket.emit("lobby");
+            this.clearQueue(language);
+            this.initHandlers(socket);
         }
-        if (!this.languageQueue[language]) {
-            this.languageQueue[language] = [];
-        }
-        this.laguageUsers[language].push({ name, socket, language });
-        this.languageQueue[language].push(socket.id);
-        // if (language === "Tamil") {
-        //     this.Tamilusers.push({name, socket, language});
-        //     this.Tamilqueue.push(socket.id);
-        // } else if (language === "English") {
-        //     this.Englishusers.push({name, socket, language});
-        //     this.Englishqueue.push(socket.id);
-        // }
-        socket.emit("lobby");
-        this.clearQueue(language);
-        this.initHandlers(socket);
     }
     removeUser(socketId) {
         //I need to check in all the languages
@@ -79,10 +83,10 @@ class UserManager {
         // this.clearQueue(language);
     }
     initHandlers(socket) {
-        socket.on("offer", ({ sdp, roomId }) => {
-            this.roomManager.onOffer(roomId, sdp, socket.id);
+        socket.on("offer", ({ sdp, roomId, uuid }) => {
+            this.roomManager.onOffer(roomId, sdp, socket.id, uuid);
         });
-        socket.on("answer", ({ sdp, roomId }) => {
+        socket.on("answer", ({ sdp, roomId, uuid }) => {
             this.roomManager.onAnswer(roomId, sdp, socket.id);
         });
         socket.on("add-ice-candidate", ({ candidate, roomId, type }) => {
