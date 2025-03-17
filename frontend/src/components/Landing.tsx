@@ -13,10 +13,14 @@ export const Landing = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const [joined, setJoined] = useState(false);
-    
+
+    const roomLanguage= useSelector((state: any) => state.auth.language);
+
+    console.log('room language',roomLanguage);
+
 
     useEffect(() => {
-        setLanguage("Tamil");
+        setLanguage(roomLanguage);
         setJoined(true);
     }, []);
 

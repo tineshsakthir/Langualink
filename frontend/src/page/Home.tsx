@@ -27,21 +27,21 @@ const Home = () => {
   }, []);
 
 
-  useEffect( () => {
-    //get user and if is active then make connect to one to one as disabled
-    const fetchData = async () => {
-    const user = await axios.get(`${serverDomain}/users/me?token=${token}`);
+  // useEffect( () => {
+  //   //get user and if is active then make connect to one to one as disabled
+  //   const fetchData = async () => {
+  //   const user = await axios.get(`${serverDomain}/users/me?token=${token}`);
    
-    if(user.data.user.isActive){
-      //disable the button
-      setIsDisabled(true);
-      alert('You are suspended for temperoery')
-    }
-  }
+  //   // if(!user.data.user.isActive){
+  //   //   //disable the button
+  //   //   setIsDisabled(true);
+  //   //   alert('You are suspended for temperoery')
+  //   // }
+  // }
 
-  fetchData();
+  // fetchData();
 
-  },[])
+  // },[])
 
   useEffect(() => {
     const hours = new Date().getHours();
@@ -133,10 +133,10 @@ const Home = () => {
 
   const menuItems = [
     { name: "Change Language", icon: <FaLanguage /> },
-    { name: "Call History", icon: <FaPhoneAlt /> },
+    // { name: "Call History", icon: <FaPhoneAlt /> },
     { name: "Contact Us", icon: <FaEnvelope /> ,nav: "/contact-us" },
     { name: "Settings", icon: <FaCog /> ,nav: "/settings" },
-    { name: "Edit Profile", icon: <FaUserEdit /> ,nav: "/edit-profile" },
+    // { name: "Edit Profile", icon: <FaUserEdit /> ,nav: "/edit-profile" },
     { name: "Logout", icon: <FaSignOutAlt /> , nav: "/login" },
   ];
 
@@ -204,15 +204,19 @@ const Home = () => {
                 e.currentTarget.style.backgroundColor = "#fff";
                 e.currentTarget.style.color = "#28a745";
               }}
+<<<<<<< Updated upstream
+              onClick={() => navigate("/landing")}
+=======
               onClick={() =>{
-                if(!isDisabled){
-                  alert('You are suspended for temperoery')
-                  return 
-                }
+                // if(!isDisabled){
+                //   alert('You are suspended for temperoery')
+                //   return 
+                // }
                  navigate("/landing")
 
               }}
 
+>>>>>>> Stashed changes
             >
               Connect with co-learners
             </button>

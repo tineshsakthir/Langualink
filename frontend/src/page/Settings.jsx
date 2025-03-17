@@ -1,13 +1,39 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+const serverDomain = import.meta.env.VITE_SERVER_DOMAIN;
+import { useSelector } from "react-redux";
+
 
 const Settings = () => {
   const navigate = useNavigate();
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+  const [language, setLanguage] = useState("English");
+    const uuid = useSelector((state) => state.auth.userUuid);
 
   const toggleNotifications = () => setNotificationsEnabled(!notificationsEnabled);
   const toggleDarkMode = () => setDarkModeEnabled(!darkModeEnabled);
+
+  const handleLanguageChange = async (event) => {
+    const selectedLanguage = event.target.value;
+    setLanguage(selectedLanguage);
+
+    try {
+      const response = await fetch(`${serverDomain}/users/updateLanguage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uuid : uuid, language: selectedLanguage }),
+      });
+      const data = await response.json();
+      console.log("Language changed successfully:", data);
+      navigate('/login');
+      alert('Language changed successfully');
+    } catch (error) {
+      console.error("Error changing language:", error);
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -25,6 +51,18 @@ const Settings = () => {
         <div style={styles.settingItem}>
           <span style={styles.settingText}>Dark Mode</span>
           <input type="checkbox" checked={darkModeEnabled} onChange={toggleDarkMode} style={styles.toggleSwitch} />
+        </div>
+
+        <div style={styles.settingItem}>
+          <span style={styles.settingText}>Change Language</span>
+          <select value={language} onChange={handleLanguageChange} style={styles.dropdown}>
+          <option value="english">language</option>
+            <option value="english">English</option>
+            <option value="tamil">Tamil</option>
+            <option value="hindi">Hindi</option>
+            <option value="japan">Japaneese</option>
+            <option value="korean">Korean</option>
+          </select>
         </div>
 
         <div style={styles.settingItem}>
@@ -97,6 +135,13 @@ const styles = {
     width: "20px",
     height: "20px",
     cursor: "pointer",
+  },
+  dropdown: {
+    padding: "5px",
+    backgroundColor: "#333",
+    color: "white",
+    border: "1px solid #555",
+    borderRadius: "5px",
   },
   deactivate: {
     marginTop: "20px",
