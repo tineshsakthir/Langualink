@@ -10,6 +10,7 @@ interface UserState {
   country: string;
   dob: string;
   gender: string;
+  language: string;
 }
 
 const initialState: UserState = {
@@ -22,6 +23,7 @@ const initialState: UserState = {
   country: "",
   dob: "",
   gender: "",
+  language:"",
 };
 
 const authSlice = createSlice({
