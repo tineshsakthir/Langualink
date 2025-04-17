@@ -11,6 +11,10 @@ interface UserState {
   dob: string;
   gender: string;
   language: string;
+  isActive: boolean;
+  rating: number;
+  starRating : number;
+  totalCalls : number;
 }
 
 const initialState: UserState = {
@@ -24,6 +28,11 @@ const initialState: UserState = {
   dob: "",
   gender: "",
   language:"",
+  isActive:true,
+  rating: 0,
+  starRating : 0,
+  totalCalls : 0,
+
 };
 
 const authSlice = createSlice({

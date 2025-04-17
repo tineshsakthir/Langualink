@@ -3,7 +3,8 @@ import { FaLanguage, FaPhoneAlt, FaEnvelope, FaCog, FaUserEdit, FaSignOutAlt, Fa
 import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import BarChart from "../components/BarChart";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../redux/authSlice"; // Adjust the path based on your project structure
 import axios from "axios";
 const serverDomain = import.meta.env.VITE_SERVER_DOMAIN;
 
@@ -21,27 +22,31 @@ const Home = () => {
   const token = localStorage.getItem("authToken");
   useEffect(() => {
 
-    if(user.firstName==='') {
+    if(!token) {
       navigate("/login");
     }
   }, []);
 
 
-  // useEffect( () => {
-  //   //get user and if is active then make connect to one to one as disabled
-  //   const fetchData = async () => {
-  //   const user = await axios.get(`${serverDomain}/users/me?token=${token}`);
+  useEffect( () => {
+    //get user and if is active then make connect to one to one as disabled
+    const fetchData = async () => {
+    const user = await axios.get(`${serverDomain}/users/me?token=${token}`);
+    const dispatch = useDispatch();
+    dispatch(setUser(user.data.user));
+    // useDispatch(setUser(user.data.user));
+    
    
-  //   // if(!user.data.user.isActive){
-  //   //   //disable the button
-  //   //   setIsDisabled(true);
-  //   //   alert('You are suspended for temperoery')
-  //   // }
-  // }
+    // if(!user.data.user.isActive){
+    //   //disable the button
+    //   setIsDisabled(true);
+    //   alert('You are suspended for temperoery')
+    // }
+  }
 
-  // fetchData();
+  fetchData();
 
-  // },[])
+  },[])
 
   useEffect(() => {
     const hours = new Date().getHours();
@@ -204,19 +209,7 @@ const Home = () => {
                 e.currentTarget.style.backgroundColor = "#fff";
                 e.currentTarget.style.color = "#28a745";
               }}
-<<<<<<< Updated upstream
               onClick={() => navigate("/landing")}
-=======
-              onClick={() =>{
-                // if(!isDisabled){
-                //   alert('You are suspended for temperoery')
-                //   return 
-                // }
-                 navigate("/landing")
-
-              }}
-
->>>>>>> Stashed changes
             >
               Connect with co-learners
             </button>
@@ -234,13 +227,16 @@ const Home = () => {
 
               onClick={()=>{
                 // window.location.href = "";
-                window.location.replace("http://localhost:3001/")
+                // window.location.replace("http://localhost:3001/")
+                navigate("/available-rooms")
+                // popupvisible
+                // http://localhost:3001/room/1a54a500-1ad0-11f0-891a-eb308cd037d1
               }}
 
               
 
             >
-              Create a room
+              Join / Create a room
             </button>
 
             {/* <button
